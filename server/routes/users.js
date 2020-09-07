@@ -9,10 +9,10 @@ const app = express();
 const _api = '/user'
 
 app.get(_api, checkToken, (req, res) => {
-    return res.json({
-        ok: 'test',
-        ussss: req.user
-    })
+    // return res.json({
+    //     ok: 'test',
+    //     ussss: req.user
+    // })
 
     let desde = Number(req.query.desde) || 0;
     let limite = Number(req.query.limite) || 5;

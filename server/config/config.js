@@ -24,3 +24,20 @@ process.env.SEED = process.env.SEED || 'seed-dev';
 //      Google
 process.env.CLIENTID = process.env.CLIENTID || '88969911991-dkvjv9v26viejosqvuvfa09kklata96r.apps.googleusercontent.com';
 // =============================================
+
+
+// =============================================
+//      Entorno
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev'
+    // =============================================
+
+
+// =============================================
+//      Base de datos
+let urlDB;
+if (process.env.NODE_ENV === 'dev') {
+    process.env.URLDB = 'mongodb://localhost:27017/DB_PAGOS'
+} else {
+    process.env.URLDB = 'mongodb+srv://admin:50HgvAimB63WXEdm@cluster0.4ynpz.mongodb.net/DB_PAGOS'
+}
+// =============================================
