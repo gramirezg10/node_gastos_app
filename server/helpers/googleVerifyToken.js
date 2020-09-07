@@ -5,7 +5,7 @@ const client = new OAuth2Client(CLIENT_ID);
 
 const checkGoogleToken = async(req, res, next) => {
     let token = req.body.idToken;
-    // console.log('token del middleware__________' + token);
+    console.log('token del middleware__________' + token);
     try {
         if (!token)
             return res.json({
