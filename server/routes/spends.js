@@ -1,11 +1,21 @@
 const express = require('express');
-const Spend = require('../models/spends')
+const Spend = require('../models/spends');
+const checkGoogleToken = require("../helpers/googleVerifyToken");
 
 const app = express();
 
 const _api = '/spend'
 
-app.get(_api, (req, res) => {
+app.post('/getspend', checkGoogleToken, async(req, res) => {
+    // :::::::::::::::::::::: Validación del token
+    // let idToken = req.body.idToken;
+    // const googleUser = await checkGoogleToken(idToken);
+    // if (!googleUser)
+    //     return res.status(400).json({
+    //         ok: false,
+    //         err: 'token inválido'
+    //     });
+    // ::::::::::::::::::::::
     Spend.find().exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -22,7 +32,8 @@ app.get(_api, (req, res) => {
 });
 
 
-app.post(_api, (req, res) => {
+app.post(_api, checkGoogleToken, async(req, res) => {
+
     let body = req.body;
     // let spend = new Spend(req.body);
     let spend = new Spend({
@@ -30,7 +41,7 @@ app.post(_api, (req, res) => {
         amount: body.amount,
         homeDetail: body.homeDetail,
         spendDetail: body.spendDetail,
-        username: body.username
+        user: body.username
     });
 
     console.log(spend);
@@ -53,7 +64,8 @@ app.post(_api, (req, res) => {
 });
 
 
-app.put(`${_api}/:id`, (req, res) => {
+app.put(`${_api}/:id`, checkGoogleToken, async(req, res) => {
+
     let id = req.params.id;
     let body = req.body;
 
@@ -94,7 +106,8 @@ app.put(`${_api}/:id`, (req, res) => {
 });
 
 
-app.delete(`${_api}/:id`, (req, res) => {
+app.delete(`${_api}/:id`, checkGoogleToken, async(req, res) => {
+
     let id = req.params.id;
 
     Spend.findByIdAndDelete(id, (err, spendDB) => {

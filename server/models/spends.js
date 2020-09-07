@@ -25,10 +25,10 @@ let spendSchema = Schema({
         SDDesc: String,
         SDAmount: Number,
     }],
-    username: {
-        type: String,
-        required: [true, 'Username is required']
-    },
+    user: [{
+        name: String,
+        email: String
+    }],
 });
 
 module.exports = mongoose.model('Spend', spendSchema);

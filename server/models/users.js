@@ -18,10 +18,10 @@ let userSchema = Schema({
         unique: true,
         required: [true, 'Email is required']
     },
-    password: {
-        type: String,
-        required: [true, 'Password is required']
-    },
+    // password: {
+    //     type: String,
+    //     required: [true, 'Password is required']
+    // },
     img: {
         type: String,
         required: false

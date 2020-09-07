@@ -10,7 +10,7 @@ process.env.PORT = process.env.PORT || 3000;
 
 // =============================================
 //      tiempo de expiración del token
-process.env.CADUCIDAD = 60 * 60 * 24 * 30;
+process.env.CADUCIDAD = 60 * 60 * 24 * 365;
 // =============================================
 
 
@@ -22,5 +22,5 @@ process.env.SEED = process.env.SEED || 'seed-dev';
 
 // =============================================
 //      Google
-process.env.CLIENTID = process.env.CLIENTID || '80412211933-3g84n75128gbgne9dda5fj6n1nqt9o25.apps.googleusercontent.com';
+process.env.CLIENTID = process.env.CLIENTID || '88969911991-dkvjv9v26viejosqvuvfa09kklata96r.apps.googleusercontent.com';
 // =============================================
