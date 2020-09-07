@@ -1,23 +1,24 @@
 {
-  "name": "gastos_app",
-  "version": "1.0.0",
-  "description": "App to manage payments",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Germán Ramírez",
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.0",
-    "body-parse": "^0.1.0",
-    "body-parser": "^1.19.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "google-auth-library": "^6.0.6",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.29",
-    "mongoose-unique-validator": "^2.0.3",
-    "underscore": "^1.10.2"
-  }
+    "name": "gastos_app",
+    "version": "1.0.0",
+    "description": "App to manage payments",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server/server.js"
+    },
+    "author": "Germán Ramírez",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^5.0.0",
+        "body-parse": "^0.1.0",
+        "body-parser": "^1.19.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "google-auth-library": "^6.0.6",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.9.29",
+        "mongoose-unique-validator": "^2.0.3",
+        "underscore": "^1.10.2"
+    }
 }
