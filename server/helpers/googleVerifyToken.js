@@ -22,6 +22,7 @@ const checkGoogleToken = async(req, res, next) => {
         });
         const payload = ticket.getPayload();
         if (payload) {
+            console.log('hay payload');
             req.user = {
                 name: payload['name'],
                 email: payload['email']
@@ -33,9 +34,10 @@ const checkGoogleToken = async(req, res, next) => {
         });
 
     } catch (error) {
+        console.log(error)
         return res.json({
             ok: false,
-            msg: 'Token inválido.'
+            msg: 'error en la validación del token.'
         });
     }
 }
