@@ -1,21 +1,14 @@
 const express = require('express');
 const Spend = require('../models/spends');
 const checkGoogleToken = require("../helpers/googleVerifyToken");
+const moment = require('moment');
 
 const app = express();
 
 const _api = '/spend'
 
-app.post('/getspend', checkGoogleToken, async(req, res) => {
-    // :::::::::::::::::::::: Validación del token
-    // let idToken = req.body.idToken;
-    // const googleUser = await checkGoogleToken(idToken);
-    // if (!googleUser)
-    //     return res.status(400).json({
-    //         ok: false,
-    //         err: 'token inválido'
-    //     });
-    // ::::::::::::::::::::::
+app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
+
     Spend.find().exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -23,6 +16,25 @@ app.post('/getspend', checkGoogleToken, async(req, res) => {
                 err
             });
         }
+        res.status(200).json({
+            ok: true,
+            msg: 'api get spend!!',
+            spendsDB: spendsDB[spendsDB.length - 1]
+        });
+    })
+});
+
+
+app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
+
+    Spend.find().exec((err, spendsDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+        spendsDB.pop()
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
@@ -35,16 +47,24 @@ app.post('/getspend', checkGoogleToken, async(req, res) => {
 app.post(_api, checkGoogleToken, async(req, res) => {
 
     let body = req.body;
-    // let spend = new Spend(req.body);
+    let _date = body.date
+    if (_date)
+        if (!moment(_date, 'DD/MM/YYYY', true).isValid())
+            return res.status(400).json({
+                ok: false,
+                err: 'Fecha con formato inválido, debe ser DD/MM/YYYY'
+            });
+        else _date = _getDate()
+
+        // let spend = new Spend(req.body);
     let spend = new Spend({
+        date: _date,
         description: body.description,
         amount: body.amount,
-        homeDetail: body.homeDetail,
-        spendDetail: body.spendDetail,
-        user: body.username
+        sd_homeDetail: body.sd_homeDetail,
+        sd_spendDetail: body.sd_spendDetail,
+        user: req.user
     });
-
-    console.log(spend);
 
     spend.save((err, spendDB) => {
         if (err) {
@@ -130,5 +150,15 @@ app.delete(`${_api}/:id`, checkGoogleToken, async(req, res) => {
     })
 
 });
+
+function _getDate() {
+    let date = new Date()
+
+    let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+    let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    let year = date.getFullYear()
+
+    return `${day}/${month}/${year}`;
+}
 
 module.exports = app;

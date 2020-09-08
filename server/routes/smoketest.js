@@ -11,4 +11,13 @@ app.get(_api, (req, res) => {
     });
 });
 
+
+// app.get('/test', (req, res) => {
+//     // res.json({
+//     //     'ok': true,
+//     //     'msg': 'server running',
+//     //     result
+//     // });
+// });
+
 module.exports = app;
