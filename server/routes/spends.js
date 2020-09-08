@@ -16,10 +16,11 @@ app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
                 err
             });
         }
+        spendRes = spendsDB[spendsDB.length - 1]
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
-            spendsDB: spendsDB[spendsDB.length - 1]
+            spendRes
         });
     })
 });
@@ -34,7 +35,6 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
                 err
             });
         }
-        spendsDB.pop()
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
