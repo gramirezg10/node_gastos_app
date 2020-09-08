@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 let spendSchema = Schema({
     date: {
         type: String,
-        default: Date.now()
+        required: [true, 'Date is required']
     },
     description: {
         type: String,
@@ -15,13 +15,11 @@ let spendSchema = Schema({
         type: Number,
         required: [true, 'Amount is required']
     },
-    homeDetail: [{
-        HDId: Number,
+    sd_homeDetail: [{
         HDDesc: String,
         HDAmount: Number,
     }],
-    spendDetail: [{
-        SDId: Number,
+    sd_spendDetail: [{
         SDDesc: String,
         SDAmount: Number,
     }],
@@ -30,5 +28,8 @@ let spendSchema = Schema({
         email: String
     }],
 });
+
+
+
 
 module.exports = mongoose.model('Spend', spendSchema);
