@@ -45,7 +45,7 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
 });
 
 
-app.post(_api, async(req, res) => {
+app.post(_api, checkGoogleToken, async(req, res) => {
 
     let body = req.body;
     let _date = body.date
