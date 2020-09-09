@@ -16,7 +16,8 @@ app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
                 err
             });
         }
-        spendRes = spendsDB[spendsDB.length - 1]
+        spendRes = spendsDB[spendsDB.length - 1];
+        _balance();
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
@@ -44,7 +45,7 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
 });
 
 
-app.post(_api, checkGoogleToken, async(req, res) => {
+app.post(_api, async(req, res) => {
 
     let body = req.body;
     let _date = body.date
@@ -159,6 +160,23 @@ function _getDate() {
     let year = date.getFullYear()
 
     return `${day}/${month}/${year}`;
+}
+
+function _balance() {
+    let _total_balance = spendRes['amount'];
+    let _total_sd_homeDetail = 0;
+    let _total_sd_spendDetail = 0;
+    // HomeDetail
+    spendRes['sd_homeDetail'].forEach(item => _total_sd_homeDetail = _total_sd_homeDetail + item['HDAmount']);
+    // SpendDetail
+    spendRes['sd_spendDetail'].forEach(item => _total_sd_spendDetail = _total_sd_spendDetail + item['SDAmount']);
+
+    _total_balance = _total_balance - _total_sd_spendDetail - _total_sd_homeDetail
+
+    spendRes.balance = _total_balance;
+    spendRes.balanceSpendDetail = _total_sd_spendDetail;
+    spendRes.balanceHomeDetail = _total_sd_homeDetail;
+    return;
 }
 
 module.exports = app;

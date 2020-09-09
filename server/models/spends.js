@@ -15,10 +15,22 @@ let spendSchema = Schema({
         type: Number,
         required: [true, 'Amount is required']
     },
+    balance: {
+        type: Number,
+        default: 0
+    },
+    balanceHomeDetail: {
+        type: Number,
+        default: 0
+    },
     sd_homeDetail: [{
         HDDesc: String,
         HDAmount: Number,
     }],
+    balanceSpendDetail: {
+        type: Number,
+        default: 0
+    },
     sd_spendDetail: [{
         SDDesc: String,
         SDAmount: Number,
