@@ -2,6 +2,7 @@ const express = require('express');
 const Spend = require('../models/spends');
 const checkGoogleToken = require("../helpers/googleVerifyToken");
 const moment = require('moment');
+const { map } = require('underscore');
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
 app.post(_api, checkGoogleToken, async(req, res) => {
 
     let body = req.body;
+    _details = _Map_sd_hd(body.sd_spendDetail, body.sd_homeDetail);
     let _date = body.date
     if (_date)
         if (!moment(_date, 'DD/MM/YYYY', true).isValid())
@@ -56,14 +58,12 @@ app.post(_api, checkGoogleToken, async(req, res) => {
                 err: 'Fecha con formato inválido, debe ser DD/MM/YYYY'
             });
         else _date = _getDate()
-
-        // let spend = new Spend(req.body);
     let spend = new Spend({
         date: _date,
         description: body.description,
         amount: body.amount,
-        sd_homeDetail: body.sd_homeDetail,
-        sd_spendDetail: body.sd_spendDetail,
+        sd_homeDetail: _details.HD[0]['HDDesc:'] > 0 ? _details.HD : [],
+        sd_spendDetail: _details.SD,
         user: req.user
     });
 
@@ -72,14 +72,12 @@ app.post(_api, checkGoogleToken, async(req, res) => {
             console.error(err);
             return res.status(400).json({
                 ok: false,
-                msg: 'ERROR in api post spend!!',
-                spend: spendDB
+                msg: 'ERROR in api post spend!!'
             });
         }
         return res.json({
             ok: true,
-            msg: 'spend created',
-            spend: spend
+            msg: 'spend created'
         });
     });
 });
@@ -106,8 +104,8 @@ app.put(`${_api}/:id`, checkGoogleToken, async(req, res) => {
             });
         }
 
-        spendDB.description = body.description,
-            spendDB.amount = body.amount,
+        spendDB.description = body.description ? body.description : spendDB.description,
+            spendDB.amount = body.amount ? body.amount : spendDB.amount,
             spendDB.homeDetail = body.homeDetail,
             spendDB.spendDetail = body.spendDetail,
 
@@ -177,6 +175,29 @@ function _balance() {
     spendRes.balanceSpendDetail = _total_sd_spendDetail;
     spendRes.balanceHomeDetail = _total_sd_homeDetail;
     return;
+}
+
+function _Map_sd_hd(strSD, strHD) {
+    let _finalListSD = [];
+    let _finalListHD = [];
+    if (strSD) {
+        let _listSD = strSD.replace('["', '').replace('","', ',').replace('"]', '').split(',');
+        _listSD.forEach((item) => {
+            let item2 = item.split('/')
+            if (item2.length = 2) _finalListSD.push({ 'SDDesc': item2[0], 'SDAmount': parseFloat(item2[1]) });
+        })
+    }
+    if (strHD) {
+        let _listHD = strHD.replace('["', '').replace('","', ',').replace('"]', '').split(',');
+        _listHD.forEach((item) => {
+            let item2 = item.split('/')
+            if (item2.length = 2) _finalListHD.push({ 'HDDesc': item2[0], 'HDAmount': parseFloat(item2[1]) });
+        })
+    }
+    // if (!_finalListHD[0]['HDDesc'] || _finalListHD[0]['HDDesc'].trim() == '' || _finalListHD[0]['HDDesc'].trim() == []) {
+    //     console.log('no tiene nada');
+    // }
+    return { 'SD': _finalListSD, 'HD': _finalListHD }
 }
 
 module.exports = app;
