@@ -8,7 +8,7 @@ const checkGoogleToken = async(req, res, next) => {
     let token = req.get('idtoken');
     if (!token) token = req.body.idToken
 
-    console.log('token del middleware__________' + token);
+    // console.log('token del middleware__________' + token);
     try {
         if (!token)
             return res.json({
@@ -25,7 +25,6 @@ const checkGoogleToken = async(req, res, next) => {
         });
         const payload = ticket.getPayload();
         if (payload) {
-            console.log('hay payload');
             req.user = {
                 name: payload['name'],
                 email: payload['email']

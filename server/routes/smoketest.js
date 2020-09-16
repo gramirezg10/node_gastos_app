@@ -12,12 +12,19 @@ app.get(_api, (req, res) => {
 });
 
 
-// app.get('/test', (req, res) => {
-//     // res.json({
-//     //     'ok': true,
-//     //     'msg': 'server running',
-//     //     result
-//     // });
-// });
+app.post('/test', (req, res) => {
+    let body = req.body;
+    let query = req.query
+    console.log('Query_____')
+    console.log(query);
+    console.log('sd_spendDetail_____')
+    console.log(query.sd_spendDetail);
+    console.log('sd_homeDetail_____')
+    console.log(query.sd_homeDetail);
+    res.json({
+        'ok': true,
+        'msg': 'server running'
+    });
+});
 
 module.exports = app;
