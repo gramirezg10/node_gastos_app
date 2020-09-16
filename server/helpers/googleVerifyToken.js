@@ -4,7 +4,6 @@ const CLIENT_ID = '88969911991-dkvjv9v26viejosqvuvfa09kklata96r.apps.googleuserc
 const client = new OAuth2Client(CLIENT_ID);
 
 const checkGoogleToken = async(req, res, next) => {
-    // let token = req.body.idToken;
     let token = req.get('idtoken');
     if (!token) token = req.body.idToken
 

@@ -29,7 +29,6 @@ app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
 
 
 app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
-
     Spend.find().exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -40,7 +39,7 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
-            spendsDB
+            spendRes: spendsDB
         });
     })
 });
