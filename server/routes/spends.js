@@ -39,7 +39,7 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
-            spendRes: spendsDB
+            spendRes: spendsDB.reverse()
         });
     })
 });
