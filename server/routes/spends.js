@@ -9,7 +9,6 @@ const app = express();
 const _api = '/spend'
 
 app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
-
     Spend.find().exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -18,7 +17,10 @@ app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
             });
         }
         spendRes = spendsDB[spendsDB.length - 1];
-        _balance();
+        balanceResult = _balance(spendRes['amount'], spendRes.sd_spendDetail, spendRes.sd_homeDetail);
+        spendRes.balance = balanceResult.balance;
+        spendRes.balanceSpendDetail = balanceResult.balanceSD;
+        spendRes.balanceHomeDetail = balanceResult.balanceHD;
         res.status(200).json({
             ok: true,
             msg: 'api get spend!!',
@@ -35,6 +37,14 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
                 ok: false,
                 err
             });
+        }
+        for (let i = 0; i < spendsDB.length; i++) {
+            let balance;
+            balance = _balance(spendsDB[i].amount, spendsDB[i].sd_spendDetail, spendsDB[i].sd_homeDetail)
+            spendsDB[i].balance = balance.balance;
+            spendsDB[i].balanceSpendDetail = balance.balanceSD;
+            spendsDB[i].balanceHomeDetail = balance.balanceHD;
+
         }
         res.status(200).json({
             ok: true,
@@ -65,12 +75,9 @@ app.post(_api, checkGoogleToken, async(req, res) => {
         spend.description = query.description,
         spend.amount = query.amount,
         spend.user = req.user
-    if (query.sd_homeDetail) {
-        spend.sd_homeDetail = query.sd_homeDetail
-    }
-    if (query.sd_spendDetail) {
-        spend.sd_spendDetail = query.sd_spendDetail
-    }
+    if (query.sd_homeDetail) spend.sd_homeDetail = query.sd_homeDetail
+
+    if (query.sd_spendDetail) spend.sd_spendDetail = query.sd_spendDetail
 
     console.log(spend);
     spend.save((err, spendDB) => {
@@ -166,21 +173,17 @@ function _getDate() {
     return `${day}/${month}/${year}`;
 }
 
-function _balance() {
-    let _total_balance = spendRes['amount'];
+function _balance(amount, listSD, listHD) {
+    let _total_balance = amount;
     let _total_sd_homeDetail = 0;
     let _total_sd_spendDetail = 0;
+    // // SpendDetail
+    if (listSD.length > 0) listSD.forEach(item => _total_sd_spendDetail = _total_sd_spendDetail + item['SDAmount']);
     // HomeDetail
-    spendRes['sd_homeDetail'].forEach(item => _total_sd_homeDetail = _total_sd_homeDetail + item['HDAmount']);
-    // SpendDetail
-    spendRes['sd_spendDetail'].forEach(item => _total_sd_spendDetail = _total_sd_spendDetail + item['SDAmount']);
+    if (listHD.length > 0) listHD.forEach(item => _total_sd_homeDetail = _total_sd_homeDetail + item['HDAmount']);
 
     _total_balance = _total_balance - _total_sd_spendDetail - _total_sd_homeDetail
-
-    spendRes.balance = _total_balance;
-    spendRes.balanceSpendDetail = _total_sd_spendDetail;
-    spendRes.balanceHomeDetail = _total_sd_homeDetail;
-    return;
+    return { 'balance': _total_balance, 'balanceSD': _total_sd_spendDetail, 'balanceHD': _total_sd_homeDetail };
 }
 
 // function _Map_sd_hd(strSD, strHD) {
