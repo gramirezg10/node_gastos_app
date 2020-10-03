@@ -9,24 +9,32 @@ const app = express();
 const _api = '/spend'
 
 app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
-    Spend.find().exec((err, spendsDB) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
+    try {
+        Spend.find().exec((err, spendsDB) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
+            spendRes = spendsDB[spendsDB.length - 1];
+            console.log(spendRes.length);
+            balanceResult = _balance(spendRes['amount'], spendRes.sd_spendDetail, spendRes.sd_homeDetail);
+            spendRes.balance = balanceResult.balance;
+            spendRes.balanceSpendDetail = balanceResult.balanceSD;
+            spendRes.balanceHomeDetail = balanceResult.balanceHD;
+            res.status(200).json({
+                ok: true,
+                msg: 'api get spend!!',
+                spendRes
             });
-        }
-        spendRes = spendsDB[spendsDB.length - 1];
-        balanceResult = _balance(spendRes['amount'], spendRes.sd_spendDetail, spendRes.sd_homeDetail);
-        spendRes.balance = balanceResult.balance;
-        spendRes.balanceSpendDetail = balanceResult.balanceSD;
-        spendRes.balanceHomeDetail = balanceResult.balanceHD;
-        res.status(200).json({
+        })
+    } catch {
+        return res.status(204).json({
             ok: true,
-            msg: 'api get spend!!',
-            spendRes
+            msg: 'no hay gastos registrados',
         });
-    })
+    }
 });
 
 
