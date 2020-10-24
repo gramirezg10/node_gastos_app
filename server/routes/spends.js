@@ -39,7 +39,7 @@ app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
 
 
 app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
-    Spend.find().exec((err, spendsDB) => {
+    Spend.find({ email: req.email }).exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
