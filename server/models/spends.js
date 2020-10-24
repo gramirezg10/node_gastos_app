@@ -23,18 +23,24 @@ let spendSchema = Schema({
         type: Number,
         default: 0
     },
-    sd_homeDetail: [{
-        HDDesc: String,
-        HDAmount: Number,
-    }],
+    sd_homeDetail: {
+        type: String,
+    },
+    // sd_homeDetail: [{
+    //     HDDesc: String,
+    //     HDAmount: Number,
+    // }],
     balanceSpendDetail: {
         type: Number,
         default: 0
     },
-    sd_spendDetail: [{
-        SDDesc: String,
-        SDAmount: Number,
-    }],
+    sd_spendDetail: {
+        type: String,
+    },
+    // sd_spendDetail: [{
+    //     SDDesc: String,
+    //     SDAmount: Number,
+    // }],
     username: {
         type: String,
         required: [true, 'Username is required']

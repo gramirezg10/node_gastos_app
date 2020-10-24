@@ -8,37 +8,47 @@ const app = express();
 
 const _api = '/spend'
 
-app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
-    try {
-        Spend.find({ email: req.email }).exec((err, spendsDB) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
+// app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
+app.post(`${_api}getlast`, async(req, res) => {
+    req.email = "gramirez@gmail.com"; //Para pruebas
+    req.username = "German Ramirez Gaviria"; //Para pruebas
+    if (req.email) {
+        try {
+            Spend.find({ email: req.email }).exec((err, spendsDB) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    });
+                }
+                spendRes = spendsDB[spendsDB.length - 1];
+                balanceResult = _balance(spendRes['amount'], spendRes.sd_spendDetail, spendRes.sd_homeDetail);
+                spendRes.balance = balanceResult.balance;
+                spendRes.balanceSpendDetail = balanceResult.balanceSD;
+                spendRes.balanceHomeDetail = balanceResult.balanceHD;
+                res.status(200).json({
+                    ok: true,
+                    msg: 'api get spend!!',
+                    spendRes
                 });
-            }
-            spendRes = spendsDB[spendsDB.length - 1];
-            console.log(spendRes.length);
-            balanceResult = _balance(spendRes['amount'], spendRes.sd_spendDetail, spendRes.sd_homeDetail);
-            spendRes.balance = balanceResult.balance;
-            spendRes.balanceSpendDetail = balanceResult.balanceSD;
-            spendRes.balanceHomeDetail = balanceResult.balanceHD;
-            res.status(200).json({
+            })
+        } catch {
+            return res.status(204).json({
                 ok: true,
-                msg: 'api get spend!!',
-                spendRes
+                msg: 'no hay gastos registrados',
             });
-        })
-    } catch {
-        return res.status(204).json({
-            ok: true,
-            msg: 'no hay gastos registrados',
-        });
-    }
+        }
+    } else return res.json({
+        ok: true,
+        msg: 'no hay email en la petición',
+    });
 });
 
 
-app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
+// app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
+app.post(`${_api}getall`, async(req, res) => {
+    req.email = "gramirez@gmail.com"; //Para pruebas
+    req.username = "German Ramirez Gaviria"; //Para pruebas
     Spend.find({ email: req.email }).exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -63,9 +73,14 @@ app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
 });
 
 
-app.post(_api, checkGoogleToken, async(req, res) => {
-
-    let query = req.query
+// app.post(_api, checkGoogleToken, async(req, res) => {
+app.post(_api, async(req, res) => { //Para pruebas
+    req.email = "gramirez@gmail.com"; //Para pruebas
+    req.username = "German Ramirez Gaviria"; //Para pruebas
+    console.log('::::::::::::::')
+    console.log(req)
+    console.log('::::::::::::::')
+    let query = req.body //para la app poner 'query', body es para probar con postman
     console.log(query)
 
     // _details = _Map_sd_hd(body.sd_spendDetail, body.sd_homeDetail);
@@ -177,22 +192,28 @@ app.delete(`${_api}/:id`, checkGoogleToken, async(req, res) => {
 
 function _getDate() {
     let date = new Date()
-
     let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
     let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
     let year = date.getFullYear()
-
     return `${day}/${month}/${year}`;
 }
 
-function _balance(amount, listSD, listHD) {
+function _balance(amount, stringSD, stringHD) {
     let _total_balance = amount;
     let _total_sd_homeDetail = 0;
     let _total_sd_spendDetail = 0;
+    let listSD = stringSD.split('//');
+    let listHD = stringHD.split('//');
     // // SpendDetail
-    if (listSD.length > 0) listSD.forEach(item => _total_sd_spendDetail = _total_sd_spendDetail + item['SDAmount']);
-    // HomeDetail
-    if (listHD.length > 0) listHD.forEach(item => _total_sd_homeDetail = _total_sd_homeDetail + item['HDAmount']);
+    if (listSD.length > 0) listSD.forEach(item => {
+            item_detail_amount = item.split('||')[1];
+            _total_sd_spendDetail = _total_sd_spendDetail + Number(item_detail_amount);
+        })
+        // HomeDetail
+    if (listHD.length > 0) listHD.forEach(item => {
+        item_detail_amount = item.split('||')[1];
+        _total_sd_homeDetail = _total_sd_homeDetail + Number(item_detail_amount);
+    });
 
     _total_balance = _total_balance - _total_sd_spendDetail - _total_sd_homeDetail
     return { 'balance': _total_balance, 'balanceSD': _total_sd_spendDetail, 'balanceHD': _total_sd_homeDetail };
