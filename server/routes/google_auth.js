@@ -9,14 +9,15 @@ const _api = '/logingoogle'
 
 app.post(_api, checkGoogleToken, async(req, res) => {
     let token = req.body.idToken;
-    const user = req.user;
-    if (!user)
+    const username = req.username;
+    const email = req.email;
+    if (!username && !email)
         return res.status(400).json({
             ok: false,
             msg: 'Token inválido.'
         });
 
-    UserModel.findOne({ email: user.email }, (err, usuarioDB) => {
+    UserModel.findOne({ email: email }, (err, usuarioDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -36,8 +37,8 @@ app.post(_api, checkGoogleToken, async(req, res) => {
 
             // Si el usuario no existe en nuestra base de datos
             let usuario = new UserModel();
-            usuario.name = user.name;
-            usuario.email = user.email;
+            usuario.name = username;
+            usuario.email = email;
             usuario.google = true;
 
             usuario.save((err, usuarioDB) => {
@@ -58,14 +59,6 @@ app.post(_api, checkGoogleToken, async(req, res) => {
             });
         }
     });
-
-    // // TODO: Guardar en su base de datos
-
-
-    // res.json({
-    //     ok: true,
-    //     user: req.user
-    // })
 });
 
 module.exports = app;
