@@ -35,10 +35,14 @@ let spendSchema = Schema({
         SDDesc: String,
         SDAmount: Number,
     }],
-    user: [{
-        name: String,
-        email: String
-    }],
+    username: {
+        type: String,
+        required: [true, 'Username is required']
+    },
+    email: {
+        type: String,
+        required: [true, 'Email is required']
+    },
 });
 
 

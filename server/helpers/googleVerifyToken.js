@@ -24,10 +24,8 @@ const checkGoogleToken = async(req, res, next) => {
         });
         const payload = ticket.getPayload();
         if (payload) {
-            req.user = {
-                name: payload['name'],
-                email: payload['email']
-            };
+            req.username = payload['name'];
+            req.email = payload['email'];
             next();
         } else return res.json({
             ok: false,

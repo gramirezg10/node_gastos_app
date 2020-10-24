@@ -79,10 +79,11 @@ app.post(_api, checkGoogleToken, async(req, res) => {
         else _date = _getDate()
     }
     let spend = Spend();
-    spend.date = _date,
-        spend.description = query.description,
-        spend.amount = query.amount,
-        spend.user = req.user
+    spend.date = _date;
+    spend.description = query.description;
+    spend.amount = query.amount;
+    spend.username = req.username;
+    spend.email = req.email;
     if (query.sd_homeDetail) spend.sd_homeDetail = query.sd_homeDetail
 
     if (query.sd_spendDetail) spend.sd_spendDetail = query.sd_spendDetail
@@ -104,7 +105,7 @@ app.post(_api, checkGoogleToken, async(req, res) => {
 });
 
 
-app.put(`${_api}/:id`, checkGoogleToken, async(req, res) => {
+app.put(`${_api}/:id`, async(req, res) => {
 
     let id = req.params.id;
     let body = req.body;
@@ -125,23 +126,26 @@ app.put(`${_api}/:id`, checkGoogleToken, async(req, res) => {
             });
         }
 
-        spendDB.description = body.description ? body.description : spendDB.description,
-            spendDB.amount = body.amount ? body.amount : spendDB.amount,
-            spendDB.homeDetail = body.homeDetail,
-            spendDB.spendDetail = body.spendDetail,
+        console.log(':::::::::::::::::::::::::::::::::::::::::::::');
+        console.log(spendDB);
+        console.log(':::::::::::::::::::::::::::::::::::::::::::::');
 
-            spendDB.save((err, spendSaved) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        err
-                    });
-                }
-                res.status(200).json({
-                    ok: true,
-                    spendSaved
+        // spendDB.description = body.description ? body.description : spendDB.description,
+        //     spendDB.amount = body.amount ? body.amount : spendDB.amount,
+        //     spendDB.homeDetail = body.homeDetail,
+        spendDB.spendDetail = []; //body.spendDetail,
+        spendDB.save((err, spendSaved) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
                 });
+            }
+            res.status(200).json({
+                ok: true,
+                spendSaved
             });
+        });
     });
 });
 
