@@ -8,10 +8,10 @@ const app = express();
 
 const _api = '/spend'
 
-// app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
-app.post(`${_api}getlast`, async(req, res) => {
-    req.email = "gramirez@gmail.com"; //Para pruebas
-    req.username = "German Ramirez Gaviria"; //Para pruebas
+// app.post(`${_api}getlast`, async(req, res) => {
+//     req.email = "gramirez@gmail.com"; //Para pruebas
+//     req.username = "German Ramirez Gaviria"; //Para pruebas
+app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
     if (req.email) {
         try {
             Spend.find({ email: req.email }).exec((err, spendsDB) => {
@@ -45,10 +45,10 @@ app.post(`${_api}getlast`, async(req, res) => {
 });
 
 
-// app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
-app.post(`${_api}getall`, async(req, res) => {
-    req.email = "gramirez@gmail.com"; //Para pruebas
-    req.username = "German Ramirez Gaviria"; //Para pruebas
+// app.post(`${_api}getall`, async(req, res) => {
+//     req.email = "gramirez@gmail.com"; //Para pruebas
+//     req.username = "German Ramirez Gaviria"; //Para pruebas
+app.post(`${_api}getall`, checkGoogleToken, async(req, res) => {
     Spend.find({ email: req.email }).exec((err, spendsDB) => {
         if (err) {
             return res.status(400).json({
@@ -73,14 +73,12 @@ app.post(`${_api}getall`, async(req, res) => {
 });
 
 
-// app.post(_api, checkGoogleToken, async(req, res) => {
-app.post(_api, async(req, res) => { //Para pruebas
-    req.email = "gramirez@gmail.com"; //Para pruebas
-    req.username = "German Ramirez Gaviria"; //Para pruebas
-    console.log('::::::::::::::')
-    console.log(req)
-    console.log('::::::::::::::')
-    let query = req.body //para la app poner 'query', body es para probar con postman
+// app.post(_api, async(req, res) => { //Para pruebas
+//     req.email = "gramirez@gmail.com"; //Para pruebas
+//     req.username = "German Ramirez Gaviria"; //Para pruebas
+// let query = req.body //para la app poner 'query', body es para probar con postman
+app.post(_api, checkGoogleToken, async(req, res) => {
+    let query = req.query
     console.log(query)
 
     // _details = _Map_sd_hd(body.sd_spendDetail, body.sd_homeDetail);
