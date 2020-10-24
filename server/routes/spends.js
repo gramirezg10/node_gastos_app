@@ -10,7 +10,7 @@ const _api = '/spend'
 
 app.post(`${_api}getlast`, checkGoogleToken, async(req, res) => {
     try {
-        Spend.find().exec((err, spendsDB) => {
+        Spend.find({ email: req.email }).exec((err, spendsDB) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
